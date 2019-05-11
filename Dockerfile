@@ -1,6 +1,11 @@
 FROM joomla:3.9.6-apache
-RUN chown -R 1001:1001 /var/www
-RUN echo "Listen 8080" > /etc/apache2/ports.config
-CMD docker-php-entrypoint apache2-foreground
-EXPOSE 8080
-USER 1001
+#Change access righs to conf, logs, bin from root to www-data
+RUN chown -hR www-data:www-data /usr/local/apache2/
+
+#setcap to bind to privileged ports as non-root
+RUN setcap 'cap_net_bind_service=+ep' /usr/local/apache2/bin/httpd
+RUN getcap /usr/local/apache2/bin/httpd
+
+HEALTHCHECK --interval=60s --timeout=30s CMD nc -zv localhost 80 || exit 1
+#Run as a www-data
+USER www-data
