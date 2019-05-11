@@ -1,4 +1,4 @@
-FROM joomla:7.1-apache
+FROM joomla:3.9.6-apache
 RUN chown -R www-data:www-data /var/www
 RUN echo "Listen 8080" > /etc/apache2/ports.config
 ENTRYPOINT ["/entrypoint.sh"]
